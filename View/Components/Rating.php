@@ -6,40 +6,35 @@ use Illuminate\View\Component;
 
 class Rating extends Component
 {
-
-
   public $view;
   public $params;
   public $model;
-  public $ratingAvg;
-  public $ratingSum;
-  
+  public $rating;
+
   /**
    * Create a new component instance.
    *
    * @return void
    */
-  public function __construct($layout = "rating-layout-1", $model,$params = [])
+  public function __construct($layout = 'rating-layout-1', $model = null, $rating = 0, $params = [])
   {
-
     $this->view = "rateable::frontend.components.rating.layouts.$layout.index";
     $this->model = $model;
+    $this->rating = $rating;
     $this->params = $params;
-
     $this->getRatingData();
-    
   }
 
   /*
   * Get data to show in the view
   */
-  private function getRatingData(){
-
-    $this->ratingSum = $this->model->SumRating;
-    $this->ratingAvg = round($this->model->AverageRating,2);
-
-
+  private function getRatingData()
+  {
+    if (!is_null($this->model)) {
+      $this->rating = round($this->model->averageRating(), 2);
+    }
   }
+
   /**
    * Get the view / contents that represent the component.
    *
@@ -49,5 +44,4 @@ class Rating extends Component
   {
     return view($this->view);
   }
-
 }
